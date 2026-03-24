@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cyber-glow: 0 0 20px rgba(0, 240, 255, 0.35);
+}
+
+body {
+  @apply bg-cyber-void text-slate-200 antialiased;
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 24px rgba(0, 240, 255, 0.45);
+  }
+  .border-glow {
+    box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.25), var(--cyber-glow);
+  }
+}
+
+/* Custom scrollbar */
+textarea::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+textarea::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-cyber-accent/30;
+}
