@@ -105,9 +105,6 @@ export default function CryptoLab() {
         `Tamaño: ${aesBits} bits (${aesBits / 8} bytes)`,
         `Hex (upper): ${hex}`,
         `Base64: ${b64}`,
-        "",
-        "Todo el material se generó en tu navegador con crypto.getRandomValues (CSPRNG).",
-        "La clave en bruto es el bloque de bytes; hex y Base64 son solo representaciones.",
       ].join("\n")
     );
   }, [aesBits]);
@@ -289,21 +286,40 @@ export default function CryptoLab() {
             >
               <Panel>
                 <SectionTitle>Cifrado simétrico · AES</SectionTitle>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  AES usa la misma clave para cifrar y descifrar. En la práctica conviene combinarla
-                  con un modo autenticado (por ejemplo GCM) y vectores de inicialización únicos por
-                  mensaje. La clave debe ser aleatoria y mantenerse en secreto.
-                </p>
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+                  <p>
+                    El cifrado simétrico es como una caja fuerte tradicional: se usa la misma llave
+                    para cerrar y para abrir.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">¿Por qué AES?:</span> Es el algoritmo
+                    más seguro y rápido del mundo. Es el que usa tu celular, tu banco y los gobiernos
+                    para proteger datos masivos.
+                  </p>
+                  <p className="font-medium text-slate-200">El tamaño sí importa:</p>
+                  <ul className="list-disc space-y-2 pl-5">
+                    <li>
+                      <span className="font-medium text-slate-200">128 bits:</span> Es rápido y
+                      seguro para la mayoría de las cosas.
+                    </li>
+                    <li>
+                      <span className="font-medium text-slate-200">256 bits:</span> Es el nivel
+                      &quot;paranoico&quot; o militar. Se recomienda para datos que deben durar
+                      décadas sin ser descifrados.
+                    </li>
+                  </ul>
+                  <p>
+                    <span className="font-medium text-slate-200">Regla de oro:</span> La llave debe
+                    ser totalmente aleatoria. Si un humano la inventa (ej. &quot;Andres123&quot;), el
+                    algoritmo AES es inútil porque la llave es débil.
+                  </p>
+                </div>
                 <div className="mt-4 rounded-lg border border-white/10 bg-black p-4 text-xs text-cyan-200/90">
                   <strong className="text-cyber-accent">Para la clase:</strong> 128, 192 y 256 bits
                   son tamaños válidos de clave AES. Hoy AES-256 es el objetivo habitual para datos de
                   larga vida; AES-128 sigue siendo muy usado cuando el modelo de amenaza lo permite.
                   Lo crítico es el generador aleatorio (CSPRNG), no “inventar” claves a mano.
                 </div>
-                <p className="mt-4 text-xs text-cyber-warn/90">
-                  Corrige un mito: el “ataque de cumpleaños” aparece en otros contextos (p. ej. hash);
-                  no implica que AES-128 “se rompe en horas” en condiciones normales de clave aleatoria.
-                </p>
               </Panel>
 
               <Panel>
@@ -351,12 +367,33 @@ export default function CryptoLab() {
             >
               <Panel>
                 <SectionTitle>RSA · par de claves (asimétrico)</SectionTitle>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  Aquí generamos un par RSA para firma (RSASSA-PKCS1-v1_5 con SHA-256). La clave
-                  pública se puede distribuir; la privada firma y debe permanecer bajo tu control.
-                  En TLS moderno se prefieren curvas elípticas por rendimiento, pero RSA sigue siendo
-                  pedagógico y muy presente en certificados legacy.
-                </p>
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+                  <p>
+                    A diferencia del anterior, aquí usamos un par de llaves que funcionan
+                    matemáticamente juntas pero son distintas.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">Llave Pública:</span> Es como tu
+                    número de cuenta bancaria; todos pueden tenerlo para enviarte dinero (cifrar
+                    mensajes).
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">Llave Privada:</span> Es como tu
+                    NIP o firma; solo tú la tienes y sirve para sacar el dinero (descifrar) o firmar
+                    documentos.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">Uso actual:</span> RSA es
+                    fundamental para navegar en internet (HTTPS). Sin embargo, es lento para
+                    archivos grandes, por lo que usualmente solo se usa para &quot;intercambiar&quot;
+                    la llave simétrica de forma segura.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">Seguridad:</span> El estándar hoy es
+                    2048 bits o más. Menos de eso ya se considera riesgoso ante computadoras
+                    potentes.
+                  </p>
+                </div>
                 <div className="mt-4 rounded-lg border border-amber-500/30 bg-black p-4 text-xs text-amber-100/90">
                   <strong>NIST SP 800-57 (resumen):</strong> 2048 bits es mínimo habitual en muchos
                   despliegues; 3072 ofrece margen mayor; 4096 aumenta coste de CPU. Planifica
@@ -420,12 +457,23 @@ export default function CryptoLab() {
             >
               <Panel>
                 <SectionTitle>Contraseñas aleatorias vs claves criptográficas</SectionTitle>
-                <p className="mt-3 text-sm text-slate-300">
-                  Una contraseña humana rara vez alcanza la entropía de una clave dibujada de un
-                  CSPRNG. Para cuentas, un gestor de contraseñas que genere cadenas largas y aleatorias
-                  se acerca al modelo ideal. Aquí simulamos esa idea con el mismo tipo de aleatoriedad
-                  que usaría <code className="text-cyan-300">secrets</code> en Python.
-                </p>
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+                  <p>
+                    Un error común es creer que una contraseña es una clave criptográfica. No lo es.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">La diferencia es la Entropía:</span>{" "}
+                    La entropía es el &quot;desorden&quot;. Los humanos somos predecibles; una máquina
+                    no.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">Seguridad real:</span> Para que una
+                    cuenta sea segura, necesitamos que la &quot;llave&quot; tenga al menos 128 bits de
+                    entropía. Como se ve en tu ejemplo, una cadena de 24 caracteres con símbolos y
+                    números es casi imposible de adivinar para una computadora, mientras que una
+                    palabra común se rompe en milisegundos.
+                  </p>
+                </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <div>
                     <label className="text-sm text-slate-400">
@@ -489,16 +537,34 @@ export default function CryptoLab() {
             >
               <Panel>
                 <SectionTitle>Funciones hash</SectionTitle>
-                <p className="mt-3 text-sm text-slate-300">
-                  Un hash criptográfico produce un resumen de tamaño fijo; es unidireccional (en la
-                  práctica no se recupera el mensaje desde el digest).{" "}
-                  <strong className="text-amber-200">SHA-1 está obsoleto</strong> para seguridad;
-                  incluido solo para comparar en clase. Para integridad hoy usa SHA-256 o SHA-512.
-                  <span className="block mt-2 text-cyber-warn/90">
-                    Ojo: hash ≠ almacenamiento de contraseñas. Para guardar contraseñas usa Argon2,
-                    scrypt o bcrypt con sal y parámetros adecuados.
-                  </span>
-                </p>
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+                  <p>
+                    Un Hash es un proceso que convierte cualquier cantidad de datos en una cadena de
+                    texto de tamaño fijo. Es unidireccional: puedes convertir &quot;Hola&quot; en un
+                    hash, pero no puedes convertir el hash de vuelta a &quot;Hola&quot;.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">SHA-256:</span> Es el estándar
+                    actual para verificar que un archivo no ha sido alterado. Si cambias un solo punto
+                    en un libro de 500 páginas, el hash cambia por completo.
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-200">El peligro de SHA-1:</span> Ya está
+                    obsoleto. Las computadoras modernas pueden generar &quot;colisiones&quot; (dos
+                    archivos distintos con el mismo hash), lo que lo hace inseguro para la policía
+                    digital o firmas electrónicas.
+                  </p>
+                  <div className="space-y-2 pt-1">
+                    <p className="font-medium text-slate-200">
+                      El &quot;Hulk&quot; de los Hashes: SHA-512
+                    </p>
+                    <p>
+                      Si el SHA-256 es el estándar de oro para la mayoría de los sitios web y
+                      Bitcoin, el SHA-512 es su hermano mayor, diseñado para una seguridad extrema y
+                      un rendimiento optimizado en hardware moderno.
+                    </p>
+                  </div>
+                </div>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {(["SHA-256", "SHA-512", "SHA-1"] as const).map((a) => (
                     <label key={a} className="flex items-center gap-2 text-sm">
@@ -510,7 +576,6 @@ export default function CryptoLab() {
                         className="accent-cyan-500"
                       />
                       {a}
-                      {a === "SHA-1" && <span className="text-red-400">(solo demo)</span>}
                     </label>
                   ))}
                 </div>
@@ -578,10 +643,6 @@ export default function CryptoLab() {
                     Boneh para profundizar.
                   </li>
                 </ul>
-                <p className="mt-6 border-t border-white/10 pt-4 text-xs text-slate-500">
-                  Este demo no envía datos a ningún servidor: todo corre en tu equipo. No uses claves
-                  de producción en presentaciones grabadas sin censurar.
-                </p>
               </Panel>
             </motion.div>
           )}
